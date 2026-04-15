@@ -1,21 +1,35 @@
 import streamlit as st
 import pandas as pd
+from st_keyup import st_keyup
 
-st.title("📈 מחשבון ריבית דריבית")
+st.title("📈 מחשבון ריבית דריבית (כולל מס ודמי ניהול)")
+st.write("חשב את גדילת ההון שלך בהתחשב בהפקדות, תשואה, דמי ניהול ומס רווחי הון.")
 
-# קלט מהמשתמש עם סליידרים
+st.divider()
+
+# קלט מהמשתמש - חלק ראשון: הפקדות וזמן
 col1, col2 = st.columns(2)
 with col1:
-    principal = st.slider("סכום התחלתי (₪)", min_value=0, max_value=1000000, value=10000, step=5000)
-    monthly_deposit = st.slider("הפקדה חודשית (₪)", min_value=0, max_value=20000, value=1000, step=500)
+    principal = st.slider("סכום התחלתי (₪)", min_value=0, max_value=1000000, value=50000, step=5000)
+    monthly_deposit = st.slider("הפקדה חודשית (₪)", min_value=0, max_value=20000, value=2000, step=500)
 
 with col2:
-    years = st.slider("תקופת השקעה (בשנים)", min_value=1, max_value=50, value=10, step=1)
+    years = st.slider("תקופת השקעה (בשנים)", min_value=1, max_value=50, value=20, step=1)
     interest_rate = st.slider("תשואה שנתית צפויה (%)", min_value=0.0, max_value=20.0, value=7.0, step=0.5)
+
+# קלט מהמשתמש - חלק שני: עלויות
+st.subheader("🛰️ דמי ניהול ומיסוי")
+c1, c2 = st.columns(2)
+with c1:
+    management_fee = st.slider("דמי ניהול שנתיים מהצבירה (%)", min_value=0.0, max_value=5.0, value=0.5, step=0.1)
+with c2:
+    tax_rate = 25  # מס רווחי הון קבוע בישראל
 
 # חישובים
 months = years * 12
-monthly_rate = interest_rate / 100 / 12
+# חישוב תשואה נטו שנתית אחרי דמי ניהול
+annual_net_rate = interest_rate - management_fee
+monthly_rate = annual_net_rate / 100 / 12
 
 data = []
 current_balance = principal
@@ -25,24 +39,34 @@ for month in range(1, months + 1):
     current_balance = current_balance * (1 + monthly_rate) + monthly_deposit
     total_deposits += monthly_deposit
     
-    # שומרים נתונים כל שנה עבור הגרף
     if month % 12 == 0:
         data.append({
             "שנה": month // 12,
             "סך הפקדות": total_deposits,
-            "שווי התיק": current_balance
+            "שווי ברוטו": current_balance
         })
+
+# חישוב מס ונטו
+total_profit = current_balance - total_deposits
+total_tax = max(0, total_profit * (tax_rate / 100))
+net_balance = current_balance - total_tax
 
 df = pd.DataFrame(data).set_index("שנה")
 
 # הצגת תוצאות
 st.divider()
-st.subheader("תוצאות")
+st.subheader("💰 סיכום תוצאות")
 
 m1, m2, m3 = st.columns(3)
-m1.metric("שווי סופי", f"₪{current_balance:,.0f}")
-m2.metric("סך ההפקדות שלך", f"₪{total_deposits:,.0f}")
-profit = current_balance - total_deposits
-m3.metric("רווח נקי", f"₪{profit:,.0f}")
+m1.metric("שווי ברוטו", f"₪{current_balance:,.0f}")
+m2.metric("רווח לפני מס", f"₪{total_profit:,.0f}")
+m3.metric("סך ההפקדות", f"₪{total_deposits:,.0f}")
+
+st.divider()
+# סקשן הנטו החדש
+st.subheader("🏁 השורה התחתונה (נטו)")
+n1, n2 = st.columns(2)
+n1.metric("סכום למשיכה (אחרי מס)", f"₪{net_balance:,.0f}", delta=f"-₪{total_tax:,.0f} מס", delta_color="inverse")
+n2.info(f"הסכום חושב לפי מס רווחי הון של {tax_rate}% על הרווח בלבד.")
 
 st.line_chart(df)
