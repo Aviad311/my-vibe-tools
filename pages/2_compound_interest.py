@@ -3,15 +3,15 @@ import pandas as pd
 
 st.title("📈 מחשבון ריבית דריבית")
 
-# קלט מהמשתמש
+# קלט מהמשתמש עם סליידרים
 col1, col2 = st.columns(2)
 with col1:
-    principal = st.number_input("סכום התחלתי (₪)", min_value=0, value=10000, step=1000)
-    monthly_deposit = st.number_input("הפקדה חודשית (₪)", min_value=0, value=1000, step=100)
+    principal = st.slider("סכום התחלתי (₪)", min_value=0, max_value=1000000, value=10000, step=5000)
+    monthly_deposit = st.slider("הפקדה חודשית (₪)", min_value=0, max_value=20000, value=1000, step=500)
 
 with col2:
-    years = st.number_input("תקופת השקעה (בשנים)", min_value=1, value=10, step=1)
-    interest_rate = st.number_input("תשואה שנתית צפויה (%)", min_value=0.0, value=7.0, step=0.5)
+    years = st.slider("תקופת השקעה (בשנים)", min_value=1, max_value=50, value=10, step=1)
+    interest_rate = st.slider("תשואה שנתית צפויה (%)", min_value=0.0, max_value=20.0, value=7.0, step=0.5)
 
 # חישובים
 months = years * 12
