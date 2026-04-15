@@ -1,4 +1,5 @@
 import streamlit as st
+from st_keyup import st_keyup
 
 st.title("🔢 ממיר בסיסים")
 st.write("בחר את בסיס המקור ואת בסיס היעד, והכנס את הערך שתרצה להמיר.")
@@ -19,7 +20,9 @@ col1, col2 = st.columns(2)
 with col1:
     st.markdown("### מאיזה בסיס?")
     source_base_name = st.selectbox("בחר בסיס מקור:", list(bases.keys()), key="source")
-    source_val = st.text_input("הכנס קלט להמרה:", placeholder="לדוגמה: 1A או 1011")
+    
+    # כאן הקסם: השתמשנו ב-st_keyup במקום st.text_input הרגיל
+    source_val = st_keyup("הכנס קלט להמרה:", placeholder="לדוגמה: 1A או 1011", key="input_val")
 
 with col2:
     st.markdown("### לאיזה בסיס?")
