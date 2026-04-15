@@ -25,11 +25,12 @@ with col1:
 
 with col2:
     st.markdown("### ⚙️ הנדסה וכלים")
-    # כאן תוכל להוסיף כפתורים לכלים הבאים שנבנה
-    st.info("כאן יתווספו הכלים ההנדסיים שלך בקרוב...")
     
-    # דוגמה לכפתור עתידי (מושבת כרגע)
-    st.button("🔢 ממיר בסיסים (בקרוב)", disabled=True, use_container_width=True)
+    if st.button("🔢 ממיר בסיסים וחומרה", use_container_width=True):
+        st.switch_page("pages/3_base_converter.py")
+        
+    if st.button("⏱️ ממיר תדרי שעון וזמנים", use_container_width=True):
+        st.switch_page("pages/4_timing_calculator.py")
 
 # תוספת עיצובית למטה
 st.write("---")
