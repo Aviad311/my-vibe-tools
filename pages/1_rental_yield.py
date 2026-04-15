@@ -2,16 +2,16 @@ import streamlit as st
 
 st.title("🏠 מחשבון תשואה משכירות")
 
-# קלט מהמשתמש
+# קלט מהמשתמש עם סליידרים
 col1, col2 = st.columns(2)
 
 with col1:
-    price = st.number_input("מחיר רכישת הדירה (בשקלים)", min_value=0, value=1500000, step=50000)
-    monthly_rent = st.number_input("שכירות חודשית צפויה", min_value=0, value=4500, step=100)
+    price = st.slider("מחיר רכישת הדירה (₪)", min_value=0, max_value=5000000, value=1500000, step=50000)
+    monthly_rent = st.slider("שכירות חודשית צפויה (₪)", min_value=0, max_value=20000, value=4500, step=100)
 
 with col2:
-    expenses = st.number_input("הוצאות שנתיות (תחזוקה, ביטוח, וכו')", min_value=0, value=5000, step=500)
-    tax_rate = st.slider("אחוז מס (אם רלוונטי)", 0, 100, 10)
+    expenses = st.slider("הוצאות שנתיות (תחזוקה, ביטוח וכו')", min_value=0, max_value=50000, value=5000, step=500)
+    tax_rate = st.slider("אחוז מס (אם רלוונטי)", min_value=0, max_value=100, value=10, step=1)
 
 # חישובים
 annual_income = monthly_rent * 12
